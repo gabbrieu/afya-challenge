@@ -20,10 +20,8 @@
     "type-check": "tsc --noEmit"
   },
   "simple-git-hooks": {
-    "pre-commit": [
-      "npm run lint",
-      "npm run type-check"
-    ]
+    "pre-commit": "npm run lint",
+    "pre-push": "npm run format"
   },
   "repository": {
     "type": "git",
@@ -54,6 +52,7 @@
     "globals": "^16.5.0",
     "jiti": "^2.6.1",
     "prettier": "^3.7.2",
+    "simple-git-hooks": "^2.13.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
