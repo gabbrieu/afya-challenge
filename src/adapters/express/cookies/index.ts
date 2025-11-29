@@ -8,14 +8,14 @@ export function setAuthCookies(res: Response, auth: LoginResponseDTO): void {
     httpOnly: true,
     secure,
     sameSite: 'lax',
-    maxAge: 5 * 60 * 1000, // 5 minutos
+    maxAge: auth.accessTtlMs,
     path: '/',
   });
   res.cookie('refresh_token', auth.refreshToken, {
     httpOnly: true,
     secure,
     sameSite: secure ? 'none' : 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
+    maxAge: auth.refreshTtlMs,
     path: '/auth/refresh',
   });
 }

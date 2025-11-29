@@ -12,4 +12,6 @@ export class LoginRequestDTO {
 export interface LoginResponseDTO {
   accessToken: string;
   refreshToken: string;
+  accessTtlMs: number;
+  refreshTtlMs: number;
 }

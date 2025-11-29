@@ -9,8 +9,15 @@
     "#controllers/*": "./src/adapters/express/controllers/*.ts",
     "#middlewares/*": "./src/adapters/express/middlewares/*.ts",
     "#cookies/*": "./src/adapters/express/cookies/*.ts",
+    "#entities/*": "./src/domain/entities/*.js",
+    "#repositories/*": "./src/domain/repositories/*.js",
+    "#domain-services/*": "./src/domain/services/*.js",
+    "#services/*": "./src/services/*.js",
     "#config/*": "./src/config/*.ts",
-    "#usecases/*": "./src/usecases/*.ts"
+    "#usecases/*": "./src/usecases/*.ts",
+    "#generated/*": "./generated/*.ts",
+    "#shared/*": "./shared/*.ts",
+    "#db/*": "./src/infra/db/*.ts"
   },
   "scripts": {
     "dev": "tsx watch src/main.ts",
@@ -40,6 +47,7 @@
   },
   "homepage": "https://github.com/gabbrieu/afya-challenge#readme",
   "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
     "@prisma/adapter-pg": "^7.0.1",
     "@prisma/client": "^7.0.1",
     "@types/express": "^5.0.5",
@@ -48,7 +56,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jose": "^6.1.2",
     "pg": "^8.16.3",
     "pino": "^9.0.0",
     "reflect-metadata": "^0.2.2",
