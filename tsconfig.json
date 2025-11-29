@@ -10,8 +10,18 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node"]
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"],
+    "paths": {
+      "#routes/*": ["./src/adapters/express/routes/*.js"],
+      "#controllers/*": ["./src/adapters/express/controllers/*.js"],
+      "#usecases/*": ["./src/usecases/*.js"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules"]
