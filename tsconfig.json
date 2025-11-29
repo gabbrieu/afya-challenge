@@ -20,6 +20,9 @@
     "paths": {
       "#routes/*": ["./src/adapters/express/routes/*.js"],
       "#controllers/*": ["./src/adapters/express/controllers/*.js"],
+      "#middlewares/*": ["./src/adapters/express/middlewares/*.js"],
+      "#cookies/*": ["./src/adapters/express/cookies/*.js"],
+      "#config/*": ["./src/config/*.ts"],
       "#usecases/*": ["./src/usecases/*.js"]
     }
   },
