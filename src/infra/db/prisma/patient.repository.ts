@@ -1,0 +1,68 @@
+import type { Logger } from '#config/logger';
+import type { PrismaClientType } from '#db/prisma/client';
+import { GenderEnum, type PatientEntity } from '#entities/patient.entity';
+import type { Patient, Prisma } from '#generated/prisma/client';
+import type { PatientRepository } from '#repositories/patient-repository.interface';
+import { AppError } from '#shared/errors/app-error';
+import { HttpStatusCode } from '#shared/http-status-code.enum';
+import type { CreatePatientRequestDTO } from '#usecases/patient/create/create-patient.dto';
+import { DateTime } from 'luxon';
+import { inject, injectable } from 'tsyringe';
+
+@injectable()
+export class PrismaPatientRepository implements PatientRepository {
+  constructor(
+    @inject('PrismaClient') private readonly prisma: PrismaClientType,
+    @inject('Logger') private readonly logger: Logger,
+  ) {}
+
+  async create(dto: CreatePatientRequestDTO): Promise<PatientEntity> {
+    try {
+      const data: Prisma.PatientCreateInput = {
+        ...dto,
+        birthDate: DateTime.fromISO(dto.birthDate).toJSDate(),
+      };
+
+      const patient = await this.prisma.patient.create({
+        data,
+      });
+
+      return this.mapToDomain(patient);
+    } catch (error: any) {
+      this.logger.error(error, 'Erro na criação do repositório de Pacientes');
+      throw new AppError({
+        message: error.message || 'Erro na criação do repositório de Pacientes',
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  async findUnique(where: Prisma.PatientWhereUniqueInput): Promise<PatientEntity | undefined> {
+    try {
+      const patient = await this.prisma.patient.findUnique({
+        where,
+      });
+
+      if (!patient) return undefined;
+
+      return this.mapToDomain(patient);
+    } catch (error: any) {
+      this.logger.error(error, 'Erro na consulta do repositório de Pacientes');
+      throw new AppError({
+        message: error.message || 'Erro na consulta do repositório de Pacientes',
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  private mapToDomain(patient: Patient): PatientEntity {
+    return {
+      ...patient,
+      sex: patient.sex ? GenderEnum[patient.sex] : null,
+      birthDate: patient.birthDate ? DateTime.fromJSDate(patient.birthDate) : null,
+      createdAt: DateTime.fromJSDate(patient.createdAt),
+      updatedAt: DateTime.fromJSDate(patient.updatedAt),
+      deletedAt: patient.deletedAt ? DateTime.fromJSDate(patient.deletedAt) : null,
+    };
+  }
+}

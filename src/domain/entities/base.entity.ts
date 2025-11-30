@@ -1,5 +1,7 @@
+import type { DateTime } from 'luxon';
+
 export interface BaseEntity {
   id: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DateTime;
+  updatedAt: DateTime;
 }
