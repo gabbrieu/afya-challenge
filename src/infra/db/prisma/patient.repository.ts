@@ -6,6 +6,8 @@ import type { PatientRepository } from '#repositories/patient-repository.interfa
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import type { CreatePatientRequestDTO } from '#usecases/patient/create/create-patient.dto';
+import type { GetAllPatientsRequestDTO } from '#usecases/patient/get-all/get-all-patients.dto';
+import type { GetAllPatientsResponseDTO } from '#usecases/patient/get-all/get-all-patients.response';
 import { DateTime } from 'luxon';
 import { inject, injectable } from 'tsyringe';
 
@@ -32,6 +34,37 @@ export class PrismaPatientRepository implements PatientRepository {
       this.logger.error(error, 'Erro na criação do repositório de Pacientes');
       throw new AppError({
         message: error.message || 'Erro na criação do repositório de Pacientes',
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  async getAll(dto: GetAllPatientsRequestDTO): Promise<GetAllPatientsResponseDTO> {
+    try {
+      const page = dto.page && dto.page > 0 ? dto.page : 1;
+      const pageSize = dto.pageSize && dto.pageSize > 0 ? Math.min(dto.pageSize, 100) : 10;
+      const where = dto?.includeDeleted ? undefined : { deletedAt: null };
+
+      const [total, patients] = await this.prisma.$transaction([
+        this.prisma.patient.count({ where }),
+        this.prisma.patient.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+        }),
+      ]);
+
+      return {
+        data: patients.map((patient) => this.mapToDomain(patient)),
+        total,
+        page,
+        pageSize,
+      };
+    } catch (error: any) {
+      this.logger.error(error, 'Erro na listagem de Pacientes');
+      throw new AppError({
+        message: error.message || 'Erro na listagem de Pacientes',
         statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
       });
     }

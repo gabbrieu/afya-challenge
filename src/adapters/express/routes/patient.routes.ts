@@ -11,6 +11,7 @@ export function registerPatientRoutes(container: DependencyContainer): Router {
   router.post('/', validateBody(CreatePatientRequestDTO), (req, res) =>
     controller.create(req, res),
   );
+  router.get('/', (req, res) => controller.getAll(req, res));
 
   return router;
 }
