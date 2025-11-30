@@ -1,6 +1,7 @@
 import { AuthController } from '#controllers/auth.controller';
 import { validateBody } from '#middlewares/validate-body.middlewares';
-import { LoginRequestDTO } from '#usecases/auth/login.dto';
+import { LoginRequestDTO } from '#usecases/auth/login/login.dto';
+
 import type { Application } from 'express';
 import type { DependencyContainer } from 'tsyringe';
 

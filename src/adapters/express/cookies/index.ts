@@ -1,4 +1,4 @@
-import type { LoginResponseDTO } from '#usecases/auth/login.dto';
+import type { LoginResponseDTO } from '#usecases/auth/login/login.dto';
 import type { Response } from 'express';
 
 export function setAuthCookies(res: Response, auth: LoginResponseDTO): void {

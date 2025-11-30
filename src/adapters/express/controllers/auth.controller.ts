@@ -1,12 +1,12 @@
 import { clearAuthCookies, setAuthCookies } from '#cookies/index';
-import type { LoginRequestDTO } from '#usecases/auth/login.dto';
-import type { LoginUseCasePort } from '#usecases/auth/login.port';
+import type { LoginRequestDTO } from '#usecases/auth/login/login.dto';
+import type { LoginUseCasePort } from '#usecases/auth/login/login.port';
 import type { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class AuthController {
-  constructor(@inject('LoginUseCasePort') private readonly loginUseCase: LoginUseCasePort) {}
+  constructor(@inject('LoginUseCase') private readonly loginUseCase: LoginUseCasePort) {}
 
   async login(req: Request, res: Response): Promise<void> {
     const dto = req.body as LoginRequestDTO;

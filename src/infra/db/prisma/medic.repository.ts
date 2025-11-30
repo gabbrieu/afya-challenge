@@ -4,6 +4,7 @@ import type { Medic, Prisma } from '#generated/prisma/client';
 import type { MedicRepository, MedicUniqueFilter } from '#repositories/medic-repository.interface';
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
+import type { CreateMedicRequestDTO } from '#usecases/medic/create-medic/create-medic.dto';
 import type { Logger } from 'pino';
 import { inject, injectable } from 'tsyringe';
 
@@ -36,6 +37,20 @@ export class PrismaMedicRepository implements MedicRepository {
         statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
       });
     }
+  }
+
+  async create(
+    dto: CreateMedicRequestDTO,
+    hashedPassword: string,
+  ): Promise<MedicEntityWithoutPassword> {
+    const medic = await this.prisma.medic.create({
+      data: {
+        ...dto,
+        password: hashedPassword,
+      },
+    });
+
+    return this.mapToDomain(medic, false);
   }
 
   private mapToDomain<T extends boolean | undefined = false>(

@@ -2,8 +2,8 @@ import type { MedicRepository } from '#repositories/medic-repository.interface';
 import type { JwtTokenService } from '#services/auth/jwt-token.service';
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
-import type { LoginRequestDTO, LoginResponseDTO } from '#usecases/auth/login.dto';
-import type { LoginUseCasePort } from '#usecases/auth/login.port';
+import type { LoginRequestDTO, LoginResponseDTO } from '#usecases/auth/login/login.dto';
+import type { LoginUseCasePort } from '#usecases/auth/login/login.port';
 import { verify } from '@node-rs/argon2';
 import { inject, injectable } from 'tsyringe';
 

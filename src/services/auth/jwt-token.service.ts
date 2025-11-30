@@ -1,5 +1,6 @@
 import type { TokenPair, TokenService } from '#domain-services/token-service.interface';
-import type { LoginResponseDTO } from '#usecases/auth/login.dto';
+import type { LoginResponseDTO } from '#usecases/auth/login/login.dto';
+
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 
 const accessKey = new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-access');
