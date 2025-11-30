@@ -1,3 +1,4 @@
+import { HttpStatusCode } from '#shared/http-status-code.enum';
 import type { CreateMedicRequestDTO } from '#usecases/medic/create-medic/create-medic.dto';
 import type { CreateMedicUseCasePort } from '#usecases/medic/create-medic/create-medic.port';
 import type { Request, Response } from 'express';
@@ -13,6 +14,6 @@ export class MedicController {
     const body = req.body as CreateMedicRequestDTO;
     const medic = await this.createMedicUseCase.execute(body);
 
-    res.json(medic);
+    res.status(HttpStatusCode.CREATED).json(medic);
   }
 }
