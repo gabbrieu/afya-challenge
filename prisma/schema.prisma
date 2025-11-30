@@ -13,12 +13,89 @@ datasource db {
   provider = "postgresql"
 }
 
-model Medic {
-  id              Int             @id @default(autoincrement())
-  email           String          @unique
-  password        String          @db.VarChar(300)
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @default(now()) @map("updated_at")
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
+  NOT_INFORM
 
-   @@map("medics")
+  @@map("gender_enum")
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELED
+
+  @@map("appointment_status_enum")
+}
+
+model Medic {
+  id              Int                 @id @default(autoincrement())
+  email           String              @db.VarChar(80) @unique
+  password        String              @db.VarChar(300)
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @default(now()) @map("updated_at")
+
+  appointments    Appointment[]
+  notes           Note[]
+
+  @@map("medics")
+}
+
+model Patient {
+  id              Int                 @id @default(autoincrement())
+  email           String?             @db.VarChar(80) @unique
+  name            String?             @db.VarChar(100)
+  cellphone       String?             @db.VarChar(11) 
+  birthDate       DateTime?           @db.Date @map("birth_date")
+  sex             Gender?          
+  height          Int?                @db.SmallInt
+  weight          Int?                @db.SmallInt
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @default(now()) @map("updated_at")
+  deletedAt       DateTime?           @map("deleted_at")
+
+  appointments    Appointment[]
+
+  @@map("patients")
+}
+
+model Appointment {
+  id              Int                 @id @default(autoincrement())
+  medicId         Int                 @map("medic_id")
+  patientId       Int                 @map("patient_id")
+  startAt         DateTime            @map("start_at")
+  endAt           DateTime            @map("end_at")
+  status          AppointmentStatus   @default(SCHEDULED)
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @default(now()) @map("updated_at")
+
+  medic           Medic               @relation(fields: [medicId], references: [id])
+  patient         Patient             @relation(fields: [patientId], references: [id])
+  notes           Note[]
+
+  @@map("appointments")
+
+  @@index([medicId])
+  @@index([patientId])
+
+  @@unique([medicId, startAt])
+}
+
+model Note {
+  id              Int                 @id @default(autoincrement())
+  appointmentId   Int                 @map("appointment_id")
+  medicId         Int                 @map("medic_id")
+  content         String              @db.Text
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @default(now()) @map("updated_at")
+
+  appointment     Appointment         @relation(fields: [appointmentId], references: [id])
+  medic           Medic               @relation(fields: [medicId], references: [id])
+
+  @@map("notes")
+
+  @@index([appointmentId])
+  @@index([medicId])
 }
