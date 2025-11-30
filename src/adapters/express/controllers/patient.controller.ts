@@ -3,6 +3,8 @@ import type { CreatePatientRequestDTO } from '#usecases/patient/create/create-pa
 import type { CreatePatientUseCasePort } from '#usecases/patient/create/create-patient.port';
 import type { GetAllPatientsRequestDTO } from '#usecases/patient/get-all/get-all-patients.dto';
 import type { GetAllPatientsUseCasePort } from '#usecases/patient/get-all/get-all-patients.port';
+import type { UpdatePatientRequestDTO } from '#usecases/patient/update/update-patient.dto';
+import type { UpdatePatientUseCasePort } from '#usecases/patient/update/update-patient.port';
 import type { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
@@ -14,6 +16,9 @@ export class PatientController {
 
     @inject('GetAllPatientsUseCase')
     private readonly getAllPatientsUseCase: GetAllPatientsUseCasePort,
+
+    @inject('UpdatePatientUseCase')
+    private readonly updatePatientUseCase: UpdatePatientUseCasePort,
   ) {}
 
   async create(req: Request, res: Response): Promise<void> {
@@ -32,5 +37,18 @@ export class PatientController {
 
     const patients = await this.getAllPatientsUseCase.execute(query);
     res.status(HttpStatusCode.OK).json(patients);
+  }
+
+  async update(req: Request, res: Response): Promise<void> {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) {
+      res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'ID inválido' });
+      return;
+    }
+
+    const body: UpdatePatientRequestDTO = req.body;
+    const patient = await this.updatePatientUseCase.execute(id, body);
+
+    res.status(HttpStatusCode.OK).json(patient);
   }
 }
