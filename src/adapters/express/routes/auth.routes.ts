@@ -11,7 +11,7 @@ export function registerAuthRoutes(container: DependencyContainer): Router {
 
   router.post('/login', validateBody(LoginRequestDTO), (req, res) => controller.login(req, res));
   router.post('/logout', authGuard(container), (_, res) => controller.logout(res));
-  router.post('/refresh', authGuard(container), (req, res) => controller.refresh(req, res));
+  router.post('/refresh', (req, res) => controller.refresh(req, res));
 
   return router;
 }
