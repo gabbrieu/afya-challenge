@@ -28,7 +28,8 @@
     "prepare": "simple-git-hooks",
     "test": "echo \"Error: no test specified\" && exit 1",
     "type-check": "tsc --noEmit",
-    "migrate:dev": "dotenv -e .env.local -- npx prisma migrate dev"
+    "migrate:dev": "dotenv -e .env.local -- npx prisma migrate dev",
+    "migrate:g": "dotenv -e .env.local -- npx prisma generate"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run lint",
