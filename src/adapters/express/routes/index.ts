@@ -5,7 +5,7 @@ import type { Application } from 'express';
 import type { DependencyContainer } from 'tsyringe';
 
 export function registerRoutes(app: Application, container: DependencyContainer): void {
-  registerAuthRoutes(app, container);
+  app.use('/auth', registerAuthRoutes(container));
   app.use('/medics', registerMedicRoutes(container));
 
   // --------- Me ----------

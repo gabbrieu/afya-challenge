@@ -8,6 +8,7 @@ export function registerMedicRoutes(container: DependencyContainer): Router {
   const router = Router();
   const controller = container.resolve(MedicController);
 
+  // Rota desprotegida para liberar a criação de novos médicos
   router.post('/', validateBody(CreateMedicRequestDTO), (req, res) => controller.create(req, res));
 
   return router;

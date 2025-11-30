@@ -1,17 +1,17 @@
-import type { LoginResponseDTO } from '#usecases/auth/login/login.dto';
+import type { TokenPair } from '#domain-services/token-service.interface';
 import type { Response } from 'express';
 
-export function setAuthCookies(res: Response, auth: LoginResponseDTO): void {
+export function setAuthCookies(res: Response, auth: TokenPair): void {
   const secure = process.env.NODE_ENV === 'production';
 
-  res.cookie('access_token', auth.accessToken, {
+  res.cookie('accessToken', auth.accessToken, {
     httpOnly: true,
     secure,
     sameSite: 'lax',
     maxAge: auth.accessTtlMs,
     path: '/',
   });
-  res.cookie('refresh_token', auth.refreshToken, {
+  res.cookie('refreshToken', auth.refreshToken, {
     httpOnly: true,
     secure,
     sameSite: secure ? 'none' : 'lax',
@@ -21,6 +21,6 @@ export function setAuthCookies(res: Response, auth: LoginResponseDTO): void {
 }
 
 export function clearAuthCookies(res: Response): void {
-  res.clearCookie('access_token', { path: '/' });
-  res.clearCookie('refresh_token', { path: '/auth/refresh' });
+  res.clearCookie('accessToken', { path: '/' });
+  res.clearCookie('refreshToken', { path: '/auth/refresh' });
 }

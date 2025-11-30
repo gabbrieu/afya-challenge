@@ -17,7 +17,11 @@ export class JwtTokenService implements TokenService {
       .setExpirationTime(this.accessTtl)
       .sign(accessKey);
 
-    const refreshToken = await new SignJWT({ sub: payload.sub, typ: 'refresh' })
+    const refreshToken = await new SignJWT({
+      sub: payload.sub,
+      email: payload.email as string,
+      typ: 'refresh',
+    })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime(this.refreshTtl)

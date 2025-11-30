@@ -1,3 +1,4 @@
+import type { Logger } from '#config/logger';
 import type { PrismaClientType } from '#db/prisma/client';
 import type { MedicEntity, MedicEntityWithoutPassword } from '#entities/medic.entity';
 import type { Medic, Prisma } from '#generated/prisma/client';
@@ -5,7 +6,6 @@ import type { MedicRepository, MedicUniqueFilter } from '#repositories/medic-rep
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import type { CreateMedicRequestDTO } from '#usecases/medic/create-medic/create-medic.dto';
-import type { Logger } from 'pino';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()

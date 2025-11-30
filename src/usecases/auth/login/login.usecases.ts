@@ -1,5 +1,5 @@
+import type { TokenService } from '#domain-services/token-service.interface';
 import type { MedicRepository } from '#repositories/medic-repository.interface';
-import type { JwtTokenService } from '#services/auth/jwt-token.service';
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import type { LoginRequestDTO, LoginResponseDTO } from '#usecases/auth/login/login.dto';
@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe';
 export class LoginUseCase implements LoginUseCasePort {
   constructor(
     @inject('MedicRepository') private readonly medicRepository: MedicRepository,
-    @inject('JWTService') private readonly jwtTokenService: JwtTokenService,
+    @inject('JWTService') private readonly jwtTokenService: TokenService,
   ) {}
 
   async execute(payload: LoginRequestDTO): Promise<LoginResponseDTO> {
