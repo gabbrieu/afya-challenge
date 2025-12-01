@@ -1,3 +1,4 @@
+import { CreateAppointmentUseCase } from '#usecases/appointment/create/create-appointment.usecase';
 import { LoginUseCase } from '#usecases/auth/login/login.usecases';
 import { RefreshTokenUseCase } from '#usecases/auth/refresh/refresh.usecase';
 import { CreateMedicUseCase } from '#usecases/medic/create-medic/create-medic.usecase';
@@ -22,4 +23,7 @@ export function setupUseCasesContainers(container: DependencyContainer): void {
   container.register('CreatePatientUseCase', { useClass: CreatePatientUseCase });
   container.register('GetAllPatientsUseCase', { useClass: GetAllPatientsUseCase });
   container.register('UpdatePatientUseCase', { useClass: UpdatePatientUseCase });
+
+  // Appointment
+  container.register('CreateAppointmentUseCase', { useClass: CreateAppointmentUseCase });
 }
