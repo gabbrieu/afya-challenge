@@ -1,6 +1,7 @@
 import { AppointmentController } from '#controllers/appointment.controller';
 import { validateBody } from '#middlewares/validate-body.middlewares';
 import { CreateAppointmentRequestDTO } from '#usecases/appointment/create/create-appointment.dto';
+import { UpdateAppointmentRequestDTO } from '#usecases/appointment/update/update-appointment.dto';
 import { Router } from 'express';
 import type { DependencyContainer } from 'tsyringe';
 
@@ -11,6 +12,11 @@ export function registerAppointmentRoutes(container: DependencyContainer): Route
   router.post('/', validateBody(CreateAppointmentRequestDTO), (req, res) =>
     controller.create(req, res),
   );
+  router.get('/', (req, res) => controller.list(req, res));
+  router.patch('/:id', validateBody(UpdateAppointmentRequestDTO), (req, res) =>
+    controller.update(req, res),
+  );
+  router.delete('/:id', (req, res) => controller.delete(req, res));
 
   return router;
 }
