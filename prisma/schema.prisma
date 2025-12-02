@@ -73,7 +73,7 @@ model Appointment {
 
   medic           Medic               @relation(fields: [medicId], references: [id])
   patient         Patient             @relation(fields: [patientId], references: [id])
-  notes           Note[]
+  note            Note?
 
   @@map("appointments")
 
@@ -85,7 +85,7 @@ model Appointment {
 
 model Note {
   id              Int                 @id @default(autoincrement())
-  appointmentId   Int                 @map("appointment_id")
+  appointmentId   Int                 @unique @map("appointment_id")
   medicId         Int                 @map("medic_id")
   content         String              @db.Text
   createdAt       DateTime            @default(now()) @map("created_at")
