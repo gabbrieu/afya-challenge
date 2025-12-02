@@ -16,6 +16,7 @@ export function registerPatientRoutes(container: DependencyContainer): Router {
   router.patch('/:id', validateBody(UpdatePatientRequestDTO), (req, res) =>
     controller.update(req, res),
   );
+  router.patch('/:id/anonymize', (req, res) => controller.anonymize(req, res));
 
   return router;
 }

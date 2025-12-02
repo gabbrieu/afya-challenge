@@ -10,4 +10,5 @@ export abstract class PatientRepository {
   abstract create(dto: CreatePatientRequestDTO): Promise<PatientEntity>;
   abstract getAll(dto: GetAllPatientsRequestDTO): Promise<GetAllPatientsResponseDTO>;
   abstract update(id: number, dto: UpdatePatientRequestDTO): Promise<PatientEntity>;
+  abstract anonymize(id: number): Promise<PatientEntity>;
 }

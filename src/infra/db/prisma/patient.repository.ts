@@ -100,6 +100,32 @@ export class PrismaPatientRepository implements PatientRepository {
     }
   }
 
+  async anonymize(id: number): Promise<PatientEntity> {
+    try {
+      const patient = await this.prisma.patient.update({
+        where: { id },
+        data: {
+          name: null,
+          email: null,
+          cellphone: null,
+          birthDate: null,
+          sex: null,
+          height: null,
+          weight: null,
+          deletedAt: new Date(),
+        },
+      });
+
+      return this.mapToDomain(patient);
+    } catch (error: any) {
+      this.logger.error(error, 'Erro na anonimização do repositório de Pacientes');
+      throw new AppError({
+        message: error.message || 'Erro na anonimização do repositório de Pacientes',
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
   async findUnique(where: Prisma.PatientWhereUniqueInput): Promise<PatientEntity | undefined> {
     try {
       const patient = await this.prisma.patient.findUnique({
