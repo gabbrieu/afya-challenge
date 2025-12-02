@@ -6,6 +6,11 @@ import type { GetAppointmentsRequestDTO } from '#usecases/appointment/get-all/ge
 import type { GetAppointmentsUseCasePort } from '#usecases/appointment/get-all/get-appointments.port';
 import type { UpdateAppointmentRequestDTO } from '#usecases/appointment/update/update-appointment.dto';
 import type { UpdateAppointmentUseCasePort } from '#usecases/appointment/update/update-appointment.port';
+import type {
+  CreateNoteRequestDTO,
+  CreateNoteUseCaseRequestDTO,
+} from '#usecases/note/create/create-note.dto';
+import type { CreateNoteUseCasePort } from '#usecases/note/create/create-note.port';
 import type { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
@@ -23,6 +28,9 @@ export class AppointmentController {
 
     @inject('DeleteAppointmentUseCase')
     private readonly deleteAppointmentUseCase: DeleteAppointmentUseCasePort,
+
+    @inject('CreateNoteUseCase')
+    private readonly createNoteUseCase: CreateNoteUseCasePort,
   ) {}
 
   async create(req: Request, res: Response): Promise<void> {
@@ -77,5 +85,22 @@ export class AppointmentController {
 
     await this.deleteAppointmentUseCase.execute(id, medicId);
     res.sendStatus(HttpStatusCode.NO_CONTENT);
+  }
+
+  async addNote(req: Request, res: Response): Promise<void> {
+    const medicId = Number(req.user.sub);
+    const appointmentId = Number(req.params.id);
+    if (Number.isNaN(appointmentId)) {
+      res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Id inválido' });
+      return;
+    }
+
+    const dto: CreateNoteUseCaseRequestDTO = {
+      ...(req.body as CreateNoteRequestDTO),
+      appointmentId,
+    };
+    const note = await this.createNoteUseCase.execute(medicId, dto);
+
+    res.status(HttpStatusCode.CREATED).json(note);
   }
 }
