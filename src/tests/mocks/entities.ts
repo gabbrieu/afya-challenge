@@ -4,7 +4,7 @@ import type { NoteEntity } from '#entities/note.entity';
 import { GenderEnum, type PatientEntity } from '#entities/patient.entity';
 import { DateTime } from 'luxon';
 
-const now = DateTime.fromISO('2025-01-01T10:00:00.000Z');
+const now = DateTime.fromISO('2025-01-01T10:00:00.000Z') as DateTime<true>;
 
 export const makePatientEntity = (overrides: Partial<PatientEntity> = {}): PatientEntity => ({
   id: 1,
