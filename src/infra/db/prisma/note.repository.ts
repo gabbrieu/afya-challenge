@@ -6,6 +6,7 @@ import type { NoteRepository } from '#repositories/note-repository.interface';
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import type { CreateNoteUseCaseRequestDTO } from '#usecases/note/create/create-note.dto';
+import type { UpdateNoteRequestDTO } from '#usecases/note/update/update-note.dto';
 import { DateTime } from 'luxon';
 import { inject, injectable } from 'tsyringe';
 
@@ -37,6 +38,38 @@ export class PrismaNoteRepository implements NoteRepository {
       }
       throw new AppError({
         message: error.message || 'Erro na criação de anotação',
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  async findByAppointmentAndMedic(
+    appointmentId: number,
+    medicId: number,
+  ): Promise<NoteEntity | undefined> {
+    const note = await this.prisma.note.findFirst({
+      where: { appointmentId, medicId },
+    });
+
+    return note ? this.mapToDomain(note) : undefined;
+  }
+
+  async update(
+    appointmentId: number,
+    medicId: number,
+    dto: UpdateNoteRequestDTO,
+  ): Promise<NoteEntity> {
+    try {
+      const note = await this.prisma.note.update({
+        where: { appointmentId, medicId },
+        data: { content: dto.content },
+      });
+
+      return this.mapToDomain(note);
+    } catch (error: any) {
+      this.logger.error(error, 'Erro na atualização de anotação');
+      throw new AppError({
+        message: error.message || 'Erro na atualização de anotação',
         statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
       });
     }

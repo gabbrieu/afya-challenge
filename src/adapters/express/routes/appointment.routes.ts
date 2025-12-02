@@ -3,6 +3,7 @@ import { validateBody } from '#middlewares/validate-body.middlewares';
 import { CreateAppointmentRequestDTO } from '#usecases/appointment/create/create-appointment.dto';
 import { UpdateAppointmentRequestDTO } from '#usecases/appointment/update/update-appointment.dto';
 import { CreateNoteRequestDTO } from '#usecases/note/create/create-note.dto';
+import { UpdateNoteRequestDTO } from '#usecases/note/update/update-note.dto';
 import { Router } from 'express';
 import type { DependencyContainer } from 'tsyringe';
 
@@ -20,6 +21,9 @@ export function registerAppointmentRoutes(container: DependencyContainer): Route
   router.delete('/:id', (req, res) => controller.delete(req, res));
   router.post('/:id/notes', validateBody(CreateNoteRequestDTO), (req, res) =>
     controller.addNote(req, res),
+  );
+  router.patch('/:id/notes', validateBody(UpdateNoteRequestDTO), (req, res) =>
+    controller.updateNote(req, res),
   );
 
   return router;

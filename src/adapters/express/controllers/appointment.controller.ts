@@ -11,6 +11,8 @@ import type {
   CreateNoteUseCaseRequestDTO,
 } from '#usecases/note/create/create-note.dto';
 import type { CreateNoteUseCasePort } from '#usecases/note/create/create-note.port';
+import type { UpdateNoteRequestDTO } from '#usecases/note/update/update-note.dto';
+import type { UpdateNoteUseCasePort } from '#usecases/note/update/update-note.port';
 import type { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
@@ -31,6 +33,9 @@ export class AppointmentController {
 
     @inject('CreateNoteUseCase')
     private readonly createNoteUseCase: CreateNoteUseCasePort,
+
+    @inject('UpdateNoteUseCase')
+    private readonly updateNoteUseCase: UpdateNoteUseCasePort,
   ) {}
 
   async create(req: Request, res: Response): Promise<void> {
@@ -63,11 +68,8 @@ export class AppointmentController {
 
   async update(req: Request, res: Response): Promise<void> {
     const medicId = Number(req.user.sub);
-    const appointmentId = Number(req.params.id);
-    if (Number.isNaN(appointmentId)) {
-      res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Id inválido' });
-      return;
-    }
+    const appointmentId = this.getAppointmentId(req, res);
+    if (!appointmentId) return;
 
     const body: UpdateAppointmentRequestDTO = req.body;
     const appointment = await this.updateAppointmentUseCase.execute(appointmentId, medicId, body);
@@ -89,11 +91,8 @@ export class AppointmentController {
 
   async addNote(req: Request, res: Response): Promise<void> {
     const medicId = Number(req.user.sub);
-    const appointmentId = Number(req.params.id);
-    if (Number.isNaN(appointmentId)) {
-      res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Id inválido' });
-      return;
-    }
+    const appointmentId = this.getAppointmentId(req, res);
+    if (!appointmentId) return;
 
     const dto: CreateNoteUseCaseRequestDTO = {
       ...(req.body as CreateNoteRequestDTO),
@@ -102,5 +101,26 @@ export class AppointmentController {
     const note = await this.createNoteUseCase.execute(medicId, dto);
 
     res.status(HttpStatusCode.CREATED).json(note);
+  }
+
+  async updateNote(req: Request, res: Response): Promise<void> {
+    const medicId = Number(req.user.sub);
+    const appointmentId = this.getAppointmentId(req, res);
+    if (!appointmentId) return;
+
+    const body: UpdateNoteRequestDTO = req.body;
+    const note = await this.updateNoteUseCase.execute(appointmentId, medicId, body);
+
+    res.status(HttpStatusCode.OK).json(note);
+  }
+
+  private getAppointmentId(req: Request, res: Response): number | undefined {
+    const appointmentId = Number(req.params.id);
+    if (Number.isNaN(appointmentId)) {
+      res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Id inválido' });
+      return;
+    }
+
+    return appointmentId;
   }
 }
