@@ -19,6 +19,7 @@ export default defineConfig({
       { find: '#entities', replacement: resolvePath('src/domain/entities') },
       { find: '#repositories', replacement: resolvePath('src/domain/repositories') },
       { find: '#domain-services', replacement: resolvePath('src/domain/services') },
+      { find: '#tests', replacement: resolvePath('src/tests') },
       { find: '#services', replacement: resolvePath('src/services') },
       { find: '#config', replacement: resolvePath('src/config') },
       { find: '#usecases', replacement: resolvePath('src/usecases') },

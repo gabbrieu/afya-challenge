@@ -25,6 +25,7 @@
       "#entities/*": ["./src/domain/entities/*.js"],
       "#repositories/*": ["./src/domain/repositories/*.js"],
       "#domain-services/*": ["./src/domain/services/*.js"],
+      "#tests/*": ["./src/tests/*.js"],
       "#services/*": ["./src/services/*.js"],
       "#config/*": ["./src/config/*.ts"],
       "#usecases/*": ["./src/usecases/*.js"],
