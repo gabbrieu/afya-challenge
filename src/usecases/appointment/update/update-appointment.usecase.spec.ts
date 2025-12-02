@@ -159,7 +159,7 @@ describe('UpdateAppointmentUseCase', () => {
     });
   });
 
-  it('deve lançar conflito se houver overlapcom outras consultas', async () => {
+  it('deve lançar conflito se houver overlap com outras consultas', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
     appointmentRepository.findUnique.mockResolvedValue(existing);
     appointmentRepository.hasOverlap.mockResolvedValue(true);
