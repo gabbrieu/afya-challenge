@@ -11,6 +11,7 @@ import type {
   CreateNoteUseCaseRequestDTO,
 } from '#usecases/note/create/create-note.dto';
 import type { CreateNoteUseCasePort } from '#usecases/note/create/create-note.port';
+import type { GetNoteUseCasePort } from '#usecases/note/get/get-note.port';
 import type { UpdateNoteRequestDTO } from '#usecases/note/update/update-note.dto';
 import type { UpdateNoteUseCasePort } from '#usecases/note/update/update-note.port';
 import type { Request, Response } from 'express';
@@ -36,6 +37,9 @@ export class AppointmentController {
 
     @inject('UpdateNoteUseCase')
     private readonly updateNoteUseCase: UpdateNoteUseCasePort,
+
+    @inject('GetNoteUseCase')
+    private readonly getNoteUseCase: GetNoteUseCasePort,
   ) {}
 
   async create(req: Request, res: Response): Promise<void> {
@@ -101,6 +105,15 @@ export class AppointmentController {
     const note = await this.createNoteUseCase.execute(medicId, dto);
 
     res.status(HttpStatusCode.CREATED).json(note);
+  }
+
+  async getNote(req: Request, res: Response): Promise<void> {
+    const medicId = Number(req.user.sub);
+    const appointmentId = this.getAppointmentId(req, res);
+    if (!appointmentId) return;
+
+    const note = await this.getNoteUseCase.execute(appointmentId, medicId);
+    res.status(HttpStatusCode.OK).json(note);
   }
 
   async updateNote(req: Request, res: Response): Promise<void> {

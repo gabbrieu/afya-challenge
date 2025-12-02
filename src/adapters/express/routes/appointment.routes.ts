@@ -22,6 +22,7 @@ export function registerAppointmentRoutes(container: DependencyContainer): Route
   router.post('/:id/notes', validateBody(CreateNoteRequestDTO), (req, res) =>
     controller.addNote(req, res),
   );
+  router.get('/:id/notes', (req, res) => controller.getNote(req, res));
   router.patch('/:id/notes', validateBody(UpdateNoteRequestDTO), (req, res) =>
     controller.updateNote(req, res),
   );

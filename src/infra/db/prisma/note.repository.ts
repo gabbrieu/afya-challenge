@@ -1,7 +1,7 @@
 import type { Logger } from '#config/logger';
 import type { PrismaClientType } from '#db/prisma/client';
 import type { NoteEntity } from '#entities/note.entity';
-import type { Note } from '#generated/prisma/client';
+import type { Note, Prisma } from '#generated/prisma/client';
 import type { NoteRepository } from '#repositories/note-repository.interface';
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
@@ -52,6 +52,22 @@ export class PrismaNoteRepository implements NoteRepository {
     });
 
     return note ? this.mapToDomain(note) : undefined;
+  }
+
+  async findUnique(where: Prisma.NoteWhereUniqueInput): Promise<NoteEntity | undefined> {
+    try {
+      const patient = await this.prisma.note.findUnique({
+        where,
+      });
+
+      return patient ? this.mapToDomain(patient) : undefined;
+    } catch (error: any) {
+      this.logger.error(error, 'Erro na consulta do repositório das anotações');
+      throw new AppError({
+        message: error.message || 'Erro na consulta do repositório das anotações',
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+      });
+    }
   }
 
   async update(

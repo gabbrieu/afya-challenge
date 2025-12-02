@@ -106,9 +106,7 @@ export class PrismaPatientRepository implements PatientRepository {
         where,
       });
 
-      if (!patient) return undefined;
-
-      return this.mapToDomain(patient);
+      return patient ? this.mapToDomain(patient) : undefined;
     } catch (error: any) {
       this.logger.error(error, 'Erro na consulta do repositório de Pacientes');
       throw new AppError({
