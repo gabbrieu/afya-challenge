@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     include: ['src/**/*.{spec,test}.{ts,tsx}'],
     setupFiles: ['vitest.setup.ts'],
+    coverage: {
+      include: ['src/**/*.usecase.{ts,tsx}'],
+    },
   },
   resolve: {
     alias: [
