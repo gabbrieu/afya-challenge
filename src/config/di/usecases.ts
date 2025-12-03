@@ -2,7 +2,7 @@ import { CreateAppointmentUseCase } from '#usecases/appointment/create/create-ap
 import { DeleteAppointmentUseCase } from '#usecases/appointment/delete/delete-appointment.usecase';
 import { GetAppointmentsUseCase } from '#usecases/appointment/get-all/get-appointments.usecase';
 import { UpdateAppointmentUseCase } from '#usecases/appointment/update/update-appointment.usecase';
-import { LoginUseCase } from '#usecases/auth/login/login.usecases';
+import { LoginUseCase } from '#usecases/auth/login/login.usecase';
 import { RefreshTokenUseCase } from '#usecases/auth/refresh/refresh.usecase';
 import { CreateMedicUseCase } from '#usecases/medic/create-medic/create-medic.usecase';
 import { CreateNoteUseCase } from '#usecases/note/create/create-note.usecase';

@@ -3,13 +3,13 @@ import type { PatientRepository } from '#repositories/patient-repository.interfa
 import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import { makeAppointmentEntity, makePatientEntity } from '#tests/mocks/entities';
-import type { MockedRepository } from '#tests/types';
+import type { MockedDependencies } from '#tests/types';
 import { CreateAppointmentUseCase } from '#usecases/appointment/create/create-appointment.usecase';
 import { DateTime } from 'luxon';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('CreateAppointmentUseCase', () => {
-  const appointmentRepository: MockedRepository<AppointmentRepository> = {
+  const appointmentRepository: MockedDependencies<AppointmentRepository> = {
     hasOverlap: vi.fn(),
     create: vi.fn(),
     listByMedic: vi.fn(),
@@ -18,7 +18,7 @@ describe('CreateAppointmentUseCase', () => {
     delete: vi.fn(),
   };
 
-  const patientRepository: MockedRepository<PatientRepository> = {
+  const patientRepository: MockedDependencies<PatientRepository> = {
     findUnique: vi.fn(),
     create: vi.fn(),
     getAll: vi.fn(),

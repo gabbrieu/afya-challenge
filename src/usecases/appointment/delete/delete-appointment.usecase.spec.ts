@@ -1,12 +1,12 @@
 import type { AppointmentRepository } from '#repositories/appointment-repository.interface';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import { makeAppointmentEntity } from '#tests/mocks/entities';
-import type { MockedRepository } from '#tests/types';
+import type { MockedDependencies } from '#tests/types';
 import { DeleteAppointmentUseCase } from '#usecases/appointment/delete/delete-appointment.usecase';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('DeleteAppointmentUseCase', () => {
-  const appointmentRepository: MockedRepository<AppointmentRepository> = {
+  const appointmentRepository: MockedDependencies<AppointmentRepository> = {
     hasOverlap: vi.fn(),
     create: vi.fn(),
     listByMedic: vi.fn(),

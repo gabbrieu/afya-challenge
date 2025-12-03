@@ -2,13 +2,13 @@ import type { AppointmentRepository } from '#repositories/appointment-repository
 import type { PatientRepository } from '#repositories/patient-repository.interface';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import { makeAppointmentEntity, makePatientEntity } from '#tests/mocks/entities';
-import type { MockedRepository } from '#tests/types';
+import type { MockedDependencies } from '#tests/types';
 import { UpdateAppointmentUseCase } from '#usecases/appointment/update/update-appointment.usecase';
 import { DateTime } from 'luxon';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('UpdateAppointmentUseCase', () => {
-  const appointmentRepository: MockedRepository<AppointmentRepository> = {
+  const appointmentRepository: MockedDependencies<AppointmentRepository> = {
     hasOverlap: vi.fn(),
     create: vi.fn(),
     listByMedic: vi.fn(),
@@ -17,7 +17,7 @@ describe('UpdateAppointmentUseCase', () => {
     delete: vi.fn(),
   };
 
-  const patientRepository: MockedRepository<PatientRepository> = {
+  const patientRepository: MockedDependencies<PatientRepository> = {
     findUnique: vi.fn(),
     create: vi.fn(),
     getAll: vi.fn(),
