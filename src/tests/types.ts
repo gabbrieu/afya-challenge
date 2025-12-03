@@ -1,6 +1,7 @@
-import type { vi } from 'vitest';
+import type { Mock } from 'vitest';
 
-export type MockedFn<T extends (...args: any[]) => any> = ReturnType<typeof vi.fn<T>>;
+type AnyFn = (...args: any[]) => any;
+export type MockedFn<T extends AnyFn> = T & Mock<AnyFn>;
 export type MockedDependencies<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => any ? MockedFn<T[K]> : T[K];
+  [K in keyof T]: T[K] extends AnyFn ? MockedFn<T[K]> : T[K];
 };

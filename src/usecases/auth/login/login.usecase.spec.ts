@@ -24,7 +24,7 @@ describe('LoginUseCase', () => {
   };
 
   const verifyMock = vi.mocked(verify);
-  const useCase = new LoginUseCase(medicRepository as unknown as MedicRepository, tokenService);
+  const useCase = new LoginUseCase(medicRepository, tokenService);
 
   beforeEach(() => {
     vi.clearAllMocks();
