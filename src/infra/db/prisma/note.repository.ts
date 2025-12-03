@@ -43,17 +43,6 @@ export class PrismaNoteRepository implements NoteRepository {
     }
   }
 
-  async findByAppointmentAndMedic(
-    appointmentId: number,
-    medicId: number,
-  ): Promise<NoteEntity | undefined> {
-    const note = await this.prisma.note.findFirst({
-      where: { appointmentId, medicId },
-    });
-
-    return note ? this.mapToDomain(note) : undefined;
-  }
-
   async findUnique(where: Prisma.NoteWhereUniqueInput): Promise<NoteEntity | undefined> {
     try {
       const patient = await this.prisma.note.findUnique({

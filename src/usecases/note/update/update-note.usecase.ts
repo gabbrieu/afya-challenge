@@ -15,7 +15,7 @@ export class UpdateNoteUseCase implements UpdateNoteUseCasePort {
     medicId: number,
     payload: UpdateNoteRequestDTO,
   ): Promise<NoteEntity> {
-    const existing = await this.noteRepository.findByAppointmentAndMedic(appointmentId, medicId);
+    const existing = await this.noteRepository.findUnique({ appointmentId, medicId });
     if (!existing) {
       throw new AppError({ message: 'Nota não encontrada', statusCode: HttpStatusCode.NOT_FOUND });
     }
