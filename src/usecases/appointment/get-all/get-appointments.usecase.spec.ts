@@ -1,22 +1,12 @@
-import type { AppointmentRepository } from '#repositories/appointment-repository.interface';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import { makeAppointmentEntity } from '#tests/mocks/entities';
-import type { MockedDependencies } from '#tests/types';
+import { appointmentRepositoryMock } from '#tests/mocks/repositories';
 import { GetAppointmentsUseCase } from '#usecases/appointment/get-all/get-appointments.usecase';
 import { DateTime } from 'luxon';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('GetAppointmentsUseCase', () => {
-  const appointmentRepository: MockedDependencies<AppointmentRepository> = {
-    hasOverlap: vi.fn(),
-    create: vi.fn(),
-    listByMedic: vi.fn(),
-    findUnique: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-  };
-
-  const useCase = new GetAppointmentsUseCase(appointmentRepository);
+  const useCase = new GetAppointmentsUseCase(appointmentRepositoryMock);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -33,11 +23,11 @@ describe('GetAppointmentsUseCase', () => {
       pageSize: 10,
     };
 
-    appointmentRepository.listByMedic.mockResolvedValue(response);
+    appointmentRepositoryMock.listByMedic.mockResolvedValue(response);
 
     const result = await useCase.execute(medicId, { dateFrom, dateTo, page: 1, pageSize: 10 });
 
-    expect(appointmentRepository.listByMedic).toHaveBeenCalledWith(medicId, {
+    expect(appointmentRepositoryMock.listByMedic).toHaveBeenCalledWith(medicId, {
       dateFrom: DateTime.fromISO(dateFrom).toISO(),
       dateTo: DateTime.fromISO(dateTo).toISO(),
       page: 1,
@@ -55,7 +45,7 @@ describe('GetAppointmentsUseCase', () => {
       statusCode: HttpStatusCode.BAD_REQUEST,
     });
 
-    expect(appointmentRepository.listByMedic).not.toHaveBeenCalled();
+    expect(appointmentRepositoryMock.listByMedic).not.toHaveBeenCalled();
   });
 
   it('deve lançar 400 quando dateTo for inválida', async () => {
@@ -67,6 +57,6 @@ describe('GetAppointmentsUseCase', () => {
       statusCode: HttpStatusCode.BAD_REQUEST,
     });
 
-    expect(appointmentRepository.listByMedic).not.toHaveBeenCalled();
+    expect(appointmentRepositoryMock.listByMedic).not.toHaveBeenCalled();
   });
 });

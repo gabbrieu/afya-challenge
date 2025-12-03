@@ -1,6 +1,5 @@
-import type { MedicRepository } from '#repositories/medic-repository.interface';
 import { makeMedicEntityWithoutPassword } from '#tests/mocks/entities';
-import type { MockedDependencies } from '#tests/types';
+import { medicRepositoryMock } from '#tests/mocks/repositories';
 import { CreateMedicUseCase } from '#usecases/medic/create-medic/create-medic.usecase';
 import { hash } from '@node-rs/argon2';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -10,13 +9,8 @@ vi.mock('@node-rs/argon2', () => ({
 }));
 
 describe('CreateMedicUseCase', () => {
-  const medicRepository: MockedDependencies<MedicRepository> = {
-    findUnique: vi.fn(),
-    create: vi.fn(),
-  };
-
   const hashMock = vi.mocked(hash);
-  const useCase = new CreateMedicUseCase(medicRepository);
+  const useCase = new CreateMedicUseCase(medicRepositoryMock);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -28,7 +22,7 @@ describe('CreateMedicUseCase', () => {
     const createdMedic = makeMedicEntityWithoutPassword({ email: payload.email });
 
     hashMock.mockResolvedValue(hashedPassword);
-    medicRepository.create.mockResolvedValue(createdMedic);
+    medicRepositoryMock.create.mockResolvedValue(createdMedic);
 
     const result = await useCase.execute(payload);
 
@@ -36,7 +30,7 @@ describe('CreateMedicUseCase', () => {
       parallelism: 2,
       memoryCost: 19456,
     });
-    expect(medicRepository.create).toHaveBeenCalledWith(payload, hashedPassword);
+    expect(medicRepositoryMock.create).toHaveBeenCalledWith(payload, hashedPassword);
     expect(result).toStrictEqual(createdMedic);
   });
 
@@ -45,15 +39,15 @@ describe('CreateMedicUseCase', () => {
     hashMock.mockRejectedValue(new Error('hash failed'));
 
     await expect(useCase.execute(payload)).rejects.toThrow('hash failed');
-    expect(medicRepository.create).not.toHaveBeenCalled();
+    expect(medicRepositoryMock.create).not.toHaveBeenCalled();
   });
 
   it('deve propagar erro se o repositório falhar', async () => {
     const payload = { email: 'medic@example.com', password: 'plain-secret' };
     hashMock.mockResolvedValue('hashed-secret');
-    medicRepository.create.mockRejectedValue(new Error('db error'));
+    medicRepositoryMock.create.mockRejectedValue(new Error('db error'));
 
     await expect(useCase.execute(payload)).rejects.toThrow('db error');
-    expect(medicRepository.create).toHaveBeenCalledWith(payload, 'hashed-secret');
+    expect(medicRepositoryMock.create).toHaveBeenCalledWith(payload, 'hashed-secret');
   });
 });

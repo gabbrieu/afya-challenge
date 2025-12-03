@@ -1,31 +1,12 @@
-import type { AppointmentRepository } from '#repositories/appointment-repository.interface';
-import type { PatientRepository } from '#repositories/patient-repository.interface';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import { makeAppointmentEntity, makePatientEntity } from '#tests/mocks/entities';
-import type { MockedDependencies } from '#tests/types';
+import { appointmentRepositoryMock, patientRepositoryMock } from '#tests/mocks/repositories';
 import { UpdateAppointmentUseCase } from '#usecases/appointment/update/update-appointment.usecase';
 import { DateTime } from 'luxon';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('UpdateAppointmentUseCase', () => {
-  const appointmentRepository: MockedDependencies<AppointmentRepository> = {
-    hasOverlap: vi.fn(),
-    create: vi.fn(),
-    listByMedic: vi.fn(),
-    findUnique: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-  };
-
-  const patientRepository: MockedDependencies<PatientRepository> = {
-    findUnique: vi.fn(),
-    create: vi.fn(),
-    getAll: vi.fn(),
-    update: vi.fn(),
-    anonymize: vi.fn(),
-  };
-
-  const useCase = new UpdateAppointmentUseCase(appointmentRepository, patientRepository);
+  const useCase = new UpdateAppointmentUseCase(appointmentRepositoryMock, patientRepositoryMock);
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -39,9 +20,9 @@ describe('UpdateAppointmentUseCase', () => {
 
   it('deve atualizar uma consulta válida', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
-    appointmentRepository.hasOverlap.mockResolvedValue(false);
-    patientRepository.findUnique.mockResolvedValue(makePatientEntity());
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
+    appointmentRepositoryMock.hasOverlap.mockResolvedValue(false);
+    patientRepositoryMock.findUnique.mockResolvedValue(makePatientEntity());
 
     const payload = {
       startAt: '2025-01-02T10:00:00.000Z',
@@ -53,17 +34,17 @@ describe('UpdateAppointmentUseCase', () => {
       startAt: DateTime.fromISO(payload.startAt),
       endAt: DateTime.fromISO(payload.endAt),
     });
-    appointmentRepository.update.mockResolvedValue(updated);
+    appointmentRepositoryMock.update.mockResolvedValue(updated);
 
     const response = await useCase.execute(1, 10, payload);
 
-    expect(appointmentRepository.hasOverlap).toHaveBeenCalledWith({
+    expect(appointmentRepositoryMock.hasOverlap).toHaveBeenCalledWith({
       medicId: 10,
       startAt: DateTime.fromISO(payload.startAt).toJSDate(),
       endAt: DateTime.fromISO(payload.endAt).toJSDate(),
       ignoreAppointmentId: 1,
     });
-    expect(appointmentRepository.update).toHaveBeenCalledWith(1, 10, {
+    expect(appointmentRepositoryMock.update).toHaveBeenCalledWith(1, 10, {
       ...payload,
       startAt: DateTime.fromISO(payload.startAt).toISO(),
       endAt: DateTime.fromISO(payload.endAt).toISO(),
@@ -72,7 +53,7 @@ describe('UpdateAppointmentUseCase', () => {
   });
 
   it('deve lançar 404 se consulta não existir', async () => {
-    appointmentRepository.findUnique.mockResolvedValue(undefined);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(undefined);
 
     await expect(
       useCase.execute(1, 10, { startAt: '2025-01-02T10:00:00.000Z' }),
@@ -80,13 +61,13 @@ describe('UpdateAppointmentUseCase', () => {
       message: 'Consulta não encontrada',
       statusCode: HttpStatusCode.NOT_FOUND,
     });
-    expect(appointmentRepository.update).not.toHaveBeenCalled();
+    expect(appointmentRepositoryMock.update).not.toHaveBeenCalled();
   });
 
   it('deve lançar 404 se o novo paciente não existir', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
-    patientRepository.findUnique.mockResolvedValue(undefined);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
+    patientRepositoryMock.findUnique.mockResolvedValue(undefined);
 
     await expect(
       useCase.execute(1, 10, { patientId: 999, startAt: existing.startAt.toISO() as string }),
@@ -94,12 +75,12 @@ describe('UpdateAppointmentUseCase', () => {
       message: 'Paciente não encontrado',
       statusCode: HttpStatusCode.NOT_FOUND,
     });
-    expect(appointmentRepository.update).not.toHaveBeenCalled();
+    expect(appointmentRepositoryMock.update).not.toHaveBeenCalled();
   });
 
   it('deve lançar erro para datas inválidas', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
 
     await expect(
       useCase.execute(1, 10, { startAt: 'invalid', endAt: 'invalid' }),
@@ -111,7 +92,7 @@ describe('UpdateAppointmentUseCase', () => {
 
   it('deve lançar erro quando endAt <= startAt', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
 
     await expect(
       useCase.execute(1, 10, {
@@ -126,20 +107,20 @@ describe('UpdateAppointmentUseCase', () => {
 
   it('deve usar datas atuais quando payload não envia startAt e endAt', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
-    appointmentRepository.hasOverlap.mockResolvedValue(false);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
+    appointmentRepositoryMock.hasOverlap.mockResolvedValue(false);
     const updated = makeAppointmentEntity({ ...existing, status: existing.status });
-    appointmentRepository.update.mockResolvedValue(updated);
+    appointmentRepositoryMock.update.mockResolvedValue(updated);
 
     const result = await useCase.execute(1, 10, { status: existing.status });
 
-    expect(appointmentRepository.hasOverlap).toHaveBeenCalledWith({
+    expect(appointmentRepositoryMock.hasOverlap).toHaveBeenCalledWith({
       medicId: 10,
       startAt: existing.startAt.toJSDate(),
       endAt: existing.endAt.toJSDate(),
       ignoreAppointmentId: 1,
     });
-    expect(appointmentRepository.update).toHaveBeenCalledWith(1, 10, {
+    expect(appointmentRepositoryMock.update).toHaveBeenCalledWith(1, 10, {
       status: existing.status,
       startAt: undefined,
       endAt: undefined,
@@ -149,7 +130,7 @@ describe('UpdateAppointmentUseCase', () => {
 
   it('deve validar quando apenas uma das datas é inválida', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
 
     await expect(
       useCase.execute(1, 10, { startAt: 'data-invalida', endAt: existing.endAt.toISO() as string }),
@@ -161,8 +142,8 @@ describe('UpdateAppointmentUseCase', () => {
 
   it('deve lançar conflito se houver overlap com outras consultas', async () => {
     const existing = makeAppointmentEntity({ id: 1, medicId: 10 });
-    appointmentRepository.findUnique.mockResolvedValue(existing);
-    appointmentRepository.hasOverlap.mockResolvedValue(true);
+    appointmentRepositoryMock.findUnique.mockResolvedValue(existing);
+    appointmentRepositoryMock.hasOverlap.mockResolvedValue(true);
 
     await expect(
       useCase.execute(1, 10, {
