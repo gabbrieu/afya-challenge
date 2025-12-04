@@ -18,7 +18,10 @@ export class AuthController {
     const jwt = await this.loginUseCase.execute(dto);
 
     setAuthCookies(res, jwt);
-    res.json(jwt);
+    res.json({
+      accessTtlMs: jwt.accessTtlMs,
+      refreshTtlMs: jwt.refreshTtlMs,
+    });
   }
 
   async logout(res: Response): Promise<void> {
@@ -31,6 +34,9 @@ export class AuthController {
     const tokenPair = await this.refreshTokenUseCase.execute({ refreshToken });
 
     setAuthCookies(res, tokenPair);
-    res.json(tokenPair);
+    res.json({
+      accessTtlMs: tokenPair.accessTtlMs,
+      refreshTtlMs: tokenPair.refreshTtlMs,
+    });
   }
 }
