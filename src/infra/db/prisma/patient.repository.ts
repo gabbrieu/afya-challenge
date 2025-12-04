@@ -33,6 +33,12 @@ export class PrismaPatientRepository implements PatientRepository {
       return this.mapToDomain(patient);
     } catch (error: any) {
       this.logger.error(error, 'Erro na criação do repositório de Pacientes');
+      if (error.code === 'P2002') {
+        throw new AppError({
+          message: 'Email já existente!',
+          statusCode: HttpStatusCode.CONFLICT,
+        });
+      }
       throw new AppError({
         message: error.message || 'Erro na criação do repositório de Pacientes',
         statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
@@ -143,8 +149,13 @@ export class PrismaPatientRepository implements PatientRepository {
   }
 
   private mapToDomain(patient: Patient): PatientEntity {
+    const height = patient.height !== null ? patient.height.toNumber() : null;
+    const weight = patient.weight !== null ? patient.weight.toNumber() : null;
+
     return {
       ...patient,
+      height,
+      weight,
       sex: patient.sex ? GenderEnum[patient.sex] : null,
       birthDate: patient.birthDate ? DateTime.fromJSDate(patient.birthDate) : null,
       createdAt: DateTime.fromJSDate(patient.createdAt),

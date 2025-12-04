@@ -38,13 +38,13 @@ export class UpdatePatientRequestDTO {
 
   @IsOptional()
   @IsNumber({ allowNaN: false })
-  @Max(350)
+  @Max(99.99)
   @Min(0)
   declare height?: number;
 
   @IsOptional()
   @IsNumber({ allowNaN: false })
-  @Max(7000)
+  @Max(999.99)
   @Min(0)
   declare weight?: number;
 }

@@ -50,8 +50,8 @@ model Patient {
   cellphone       String?             @db.VarChar(11) 
   birthDate       DateTime?           @db.Date @map("birth_date")
   sex             Gender?          
-  height          Int?                @db.SmallInt
-  weight          Int?                @db.SmallInt
+  height          Decimal?            @db.Decimal(4, 2)
+  weight          Decimal?            @db.Decimal(5, 2)
   createdAt       DateTime            @default(now()) @map("created_at")
   updatedAt       DateTime            @default(now()) @updatedAt @map("updated_at")
   deletedAt       DateTime?           @map("deleted_at")
