@@ -18,7 +18,8 @@
     "#usecases/*": "./src/usecases/*.ts",
     "#generated/*": "./generated/*.ts",
     "#shared/*": "./shared/*.ts",
-    "#db/*": "./src/infra/db/*.ts"
+    "#db/*": "./src/infra/db/*.ts",
+    "#docs/*": "./src/docs/*.js"
   },
   "scripts": {
     "dev": "tsx watch src/main.ts",
@@ -67,6 +68,7 @@
     "pg": "^8.16.3",
     "pino": "^9.0.0",
     "reflect-metadata": "^0.2.2",
+    "swagger-ui-express": "^5.0.1",
     "tsyringe": "^4.10.0"
   },
   "devDependencies": {
@@ -76,6 +78,7 @@
     "@types/luxon": "^3.7.1",
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
+    "@types/swagger-ui-express": "^4.1.8",
     "@vitest/coverage-v8": "^4.0.15",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",

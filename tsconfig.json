@@ -31,7 +31,8 @@
       "#usecases/*": ["./src/usecases/*.js"],
       "#generated/*": ["./generated/*.ts"],
       "#shared/*": ["./src/shared/*.ts"],
-      "#db/*": ["./src/infra/db/*.ts"]
+      "#db/*": ["./src/infra/db/*.ts"],
+      "#docs/*": ["./src/docs/*.js"]
     }
   },
   "include": ["src/**/*.ts"],

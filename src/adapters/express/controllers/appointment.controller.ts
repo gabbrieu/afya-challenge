@@ -59,7 +59,6 @@ export class AppointmentController {
     const medicId = Number(req.user.sub);
 
     const query: GetAppointmentsRequestDTO = {
-      includeDeleted: req.query.includeDeleted === 'true',
       page: req.query.page ? Number(req.query.page) : undefined,
       pageSize: req.query.pageSize ? Number(req.query.pageSize) : undefined,
       dateFrom: req.query.dateFrom as string | undefined,

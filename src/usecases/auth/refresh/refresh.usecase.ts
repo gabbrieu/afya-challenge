@@ -41,11 +41,9 @@ export class RefreshTokenUseCase implements RefreshTokenUseCasePort {
   }
 
   private async handleNewTokens(medic: MedicEntityWithoutPassword): Promise<TokenPair> {
-    const tokenPair = await this.jwtTokenService.signPair({
+    return await this.jwtTokenService.signPair({
       sub: String(medic.id),
       email: medic.email,
     });
-
-    return tokenPair;
   }
 }
