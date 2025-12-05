@@ -7,11 +7,13 @@ API em Node.js/TypeScript para gerenciar médicos, pacientes, consultas e notas 
 - Node.js + TypeScript + Express 5
 - Docker + docker-compose
 - Prisma + PostgreSQL
+- Eslint + Prettier para qualidade do código
+- Hooks do git com simple-git-hooks
 - Autenticação com JWT em cookies (`accessToken` e `refreshToken`)
 - Class-validator/class-transformer para validação
 - Injeção de dependência com tsyringe
 - Vitest para testes
-- Swagger UI na rota `/docs`
+- Swagger UI para documentação na rota `/docs`
 
 ## Requisitos
 
@@ -66,7 +68,7 @@ Acesse:
 - `npm run test:coverage` — cobertura de testes.
 - `npm run test:verbose` — testes com as descrições.
 - `npm run type-check` — checagem de tipos.
-- `npm run lint` / `npm run lint:fix` — lint.
+- `npm run lint` / `npm run lint:fix` — lint com eslint.
 - `npm run migrate:dev` — aplica migrações (usa dotenv com `.env.local`).
 - `npm run migrate:g` — gera cliente Prisma.
 
