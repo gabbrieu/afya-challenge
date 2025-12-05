@@ -56,6 +56,14 @@ export class UpdateAppointmentUseCase implements UpdateAppointmentUseCasePort {
       });
     }
 
+    const isStartDateOnPass = start.diffNow('days').days < 0;
+    if (isStartDateOnPass) {
+      throw new AppError({
+        message: 'Não dá para agendar consultas no passado',
+        statusCode: HttpStatusCode.BAD_REQUEST,
+      });
+    }
+
     const hasConflict = await this.appointmentRepository.hasOverlap({
       medicId,
       startAt: start.toJSDate(),

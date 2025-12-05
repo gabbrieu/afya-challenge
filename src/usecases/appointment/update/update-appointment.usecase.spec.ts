@@ -1,3 +1,4 @@
+import { AppError } from '#shared/errors/app-error';
 import { HttpStatusCode } from '#shared/http-status-code.enum';
 import { makeAppointmentEntity, makePatientEntity } from '#tests/mocks/entities';
 import { appointmentRepositoryMock, patientRepositoryMock } from '#tests/mocks/repositories';
@@ -101,6 +102,23 @@ describe('UpdateAppointmentUseCase', () => {
       }),
     ).rejects.toMatchObject({
       message: 'A data/hora de término deve ser maior que a de início',
+      statusCode: HttpStatusCode.BAD_REQUEST,
+    });
+  });
+
+  it('não deve permitir agendamento no passado', async () => {
+    patientRepositoryMock.findUnique.mockResolvedValue(makePatientEntity());
+
+    const payload = {
+      patientId: 1,
+      startAt: '2023-12-31T10:00:00.000Z',
+      endAt: '2023-12-31T11:00:00.000Z',
+    };
+    const response = useCase.execute(1, 10, payload);
+
+    await expect(response).rejects.toBeInstanceOf(AppError);
+    await expect(response).rejects.toMatchObject({
+      message: 'Não dá para agendar consultas no passado',
       statusCode: HttpStatusCode.BAD_REQUEST,
     });
   });
